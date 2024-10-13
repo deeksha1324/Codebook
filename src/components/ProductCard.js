@@ -1,10 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Rating from './Rating';
+import { useCart } from '../context/CartContext';
 
 
 export default function ProductCard({product}) {
     const {id, name,poster, overview, price,rating, best_seller} = product;
+    const {cartList, addToCart, removeFromCart} = useCart()
+    const [inCart, setInCart] = useState(false)
+
+    useEffect(()=>{
+        const productInCart = cartList.find(item =>item.id === product.id)
+
+        if(productInCart){
+            setInCart(true)
+        }
+        else{
+            setInCart(false)
+        }
+    },[cartList, product.id])
+
+     function handleClick(product){
+        addToCart(product)
+    }
+
+
+
   return (
       
     <div className="m-3 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700">
@@ -29,12 +50,17 @@ export default function ProductCard({product}) {
             </p>
             
             <div className="flex items-center justify-between my-2">  
-            <button className='bg-red-500 text-slate-100 p-1 rounded-md'>
-                <i className="ml-1 bi bi-trash3">Remove item</i>
-            </button>
-                <button className='bg-blue-600 text-slate-100 p-1 rounded-md'>
-                    <i className="ml-1 bi bi-plus-lg">Add to cart</i>
-                </button>
+                
+                {!inCart && 
+                    <button onClick={()=>handleClick(product)} className={`bg-blue-600 text-slate-100 p-1 rounded-md ${product.in_stock ? "" : "cursor-not-allowed"}`}  disabled = {product.in_stock ? "" : "disabled"} >
+                        <i className="ml-1 bi bi-plus-lg">Add to cart</i>
+                    </button>
+                }    
+                {inCart && 
+                    <button onClick={() =>removeFromCart(product)} className='bg-red-500 text-slate-100 p-1 rounded-md'>
+                        <i className="ml-1 bi bi-trash3">Remove item</i>
+                    </button>
+                }   
             </div>
             
         </div>

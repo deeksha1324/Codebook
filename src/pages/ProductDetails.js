@@ -2,12 +2,25 @@ import React, { useEffect, useState } from 'react';
 import Rating from '../components/Rating';
 import { useParams } from 'react-router-dom';
 import useTitle from '../hook/useTitle';
+import { useCart } from '../context/CartContext';
 
 export default function ProductDetails() {
+  const {cartList,addToCart, removeFromCart} = useCart();
+  const [inCart, setInCart] = useState(false);
     const [product, setProduct] = useState({});
     const { id } =useParams()
     useTitle(product.name)
 
+    useEffect(()=>{
+      const productInCart = cartList.find(item => item.id === product.id)
+
+      if(productInCart){
+        setInCart(true)
+      }
+      else{
+        setInCart(false)
+      }
+    },[cartList, product.id])
     
 
     useEffect(()=>{
@@ -46,12 +59,17 @@ export default function ProductDetails() {
                 <span className="font-semibold text-blue-500 border bg-slate-100 rounded-lg px-3 py-1 mr-2">{product.size} MB</span>
               </p>
               <p className="my-3">
-              <button className='bg-blue-600 text-slate-100 p-1 rounded-md'>
-                    <i className="ml-1 bi bi-plus-lg">Add to cart</i>
-                </button>
-                {/* <button className='bg-red-500 text-slate-100 p-1 rounded-md'>
-                <i className="ml-1 bi bi-trash3">Remove item</i>
-                </button>  */}
+
+                {!inCart && 
+                  <button onClick={() => addToCart(product)} className={`bg-blue-600 text-slate-100 p-1 rounded-md ${product.in_stock ? "" : "cursor-not-allowed"}`} disabled={product.in_stock ? "" : "disabled"}>
+                      <i className="ml-1 bi bi-plus-lg">Add to cart</i>
+                  </button>
+                }
+                {inCart && 
+                  <button onClick={()=> removeFromCart(product)} className='bg-red-500 text-slate-100 p-1 rounded-md'>
+                  <i className="ml-1 bi bi-trash3">Remove item</i>
+                  </button>  
+                }
               </p>
               <p className="text-lg text-gray-900 dark:text-slate-200">
                 {product.long_description}

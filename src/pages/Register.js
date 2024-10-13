@@ -15,24 +15,34 @@ export default function Register() {
 
         const requestOptions =  {
             method: "POST",
-            headers: {"content-Type": "application/json"},
+            headers: {"Content-Type": "application/json"},
             body: JSON.stringify(authDetails)
         }
 
-        const response = await fetch("http://localhost:7000/register", requestOptions);
-
-        const result = await response.json()
-        console.log(result)
-        result.accessToken ? navigate("/products"):toast.error(result) ;
-
-
-
-        if(result.accessToken){
-            sessionStorage.setItem("token", JSON.stringify(result.accessToken))
-            sessionStorage.setItem("cbid", JSON.stringify(result.user.id))
+        try {
+            const response = await fetch("http://localhost:7000/register", requestOptions);
+    
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                toast.error(`Error: ${errorMessage}`);
+                return;
+            }
+    
+            const result = await response.json();
+            console.log(result);
+            result.accessToken ? navigate("/products") : toast.error(result);
+    
+            if (result.accessToken) {
+                sessionStorage.setItem("token", JSON.stringify(result.accessToken));
+                sessionStorage.setItem("cbid", JSON.stringify(result.user.id));
+            }
+        } catch (error) {
+            console.error("Fetch error:", error);
+            toast.error("An error occurred during registration.");
         }
-        
     }
+        
+    
 
 
 
