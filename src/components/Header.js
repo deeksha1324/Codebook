@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import Search from './Search';
 import DropdownLoggedIn from './DropdownLoggedIn';
 import DropdownLoggedOut from './DropdownLoggedOut';
+import { useCart } from '../context/CartContext';
+
 
 export default function Header() {
+    const {cartList} = useCart()
     const [darkmode, setDarkmode] = useState(JSON.parse(localStorage.getItem("darkmode")) ||false)
     const [searchSec, setSearch] = useState(false)
     const [dropdown, setDropdown] = useState(false)
@@ -36,7 +39,7 @@ export default function Header() {
                     
                     <Link to="/cart" className="text-gray-700 dark:text-white mr-5">
                     <span className='cursor-pointer text-xl relative bi bi-bag'>
-                    <span className="text-white text-sm absolute -top-1 left-2.5 bg-rose-500 px-1 rounded-full ">0</span>
+                    <span className="text-white text-sm absolute -top-1 left-2.5 bg-rose-500 px-1 rounded-full ">{cartList.length}</span>
                     </span>
                     </Link>
 

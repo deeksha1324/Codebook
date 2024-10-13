@@ -1,12 +1,14 @@
 import React from 'react';
 import EmptyCart from './components/EmptyCart';
 import CartList from './components/CartList';
+import { useCart } from '../../context/CartContext';
 
 export default function CartPage() {
-  const cartlistLength = 1;
+  const {cartList} = useCart();
+  
   return (
     <main>
-    {cartlistLength ? <CartList /> : <EmptyCart /> }
+    {cartList.length ? <CartList /> : <EmptyCart /> }
     </main>
   )
 }
