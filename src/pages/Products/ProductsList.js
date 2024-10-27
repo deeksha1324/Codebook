@@ -14,21 +14,24 @@ export default function ProductsList() {
   // console.log(search)
   const searchItem = new URLSearchParams(search).get("q");
   useTitle("Explore ebook collection")
-
+  // console.log(searchItem)
   // const {productList} = useFilter()
   // console.log(productList)
 
 
   
-  console.log(searchItem)
+  // console.log(searchItem)
 
   useEffect(()=>{
     async function fetchProducts() {
-      const response = await fetch(`http://localhost:7000/products?name_like=${searchItem? searchItem: ""}`);
+      const response = await fetch(`http://localhost:7000/products?name_like=${searchItem ? searchItem: ""}`);
       const data = await response.json();
       // setProducts(data);
       initialProductList(data)
       console.log(data)
+
+      // console.log(`Fetching products from: http://localhost:7000/products?includes=${searchItem}`);
+
     }
     fetchProducts();
   }, [searchItem])
