@@ -5,9 +5,11 @@ import { useLocation } from 'react-router-dom';
 import useTitle from '../../hook/useTitle';
 import { useFilter } from '../../context';
 import React from 'react';
+// import { toast } from 'react-toastify';
 
 
 export default function ProductsList() {
+  const [errorMsg, setErrorMsg] = useState("")
   const [show, setShow] = useState(false)
   const {products, initialProductList} = useFilter()
   const search= useLocation().search;
@@ -24,17 +26,24 @@ export default function ProductsList() {
 
   useEffect(()=>{
     async function fetchProducts() {
-      const response = await fetch(`http://localhost:7000/products?name_like=${searchItem ? searchItem: ""}`);
-      const data = await response.json();
-      // setProducts(data);
-      initialProductList(data)
-      console.log(data)
+      try{
+        const response = await fetch(`${process.env.REACT_APP_HOST}/products?name_like=${searchItem ? searchItem: ""}`);
+        const data = await response.json();
+        // setProducts(data);
+        initialProductList(data)
+        console.log(data)
 
-      // console.log(`Fetching products from: http://localhost:7000/products?includes=${searchItem}`);
+        // console.log(`Fetching products from: http://localhost:7000/products?includes=${searchItem}`);
 
+      }
+      catch(error){
+        // toast.error(error.message)
+        setErrorMsg(error.message)
+      }
     }
     fetchProducts();
-  }, [searchItem])
+    // eslint-disable-next-line
+  }, [searchItem]); 
 
   return (
     <main>
@@ -47,8 +56,9 @@ export default function ProductsList() {
                 </button>
               </span>            
             </div>    
-
+            <p className='dark:text-slate-100'>{errorMsg}</p>
             <div className="flex flex-wrap justify-center lg:flex-row">
+              
               {products.map((product) => (
                 <ProductCard key={product.id} product={product}/>
               ))}
