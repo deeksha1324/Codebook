@@ -24,7 +24,7 @@ root.render(
       </CartProvider>
     </BrowserRouter>
   </React.StrictMode>
-);
+)
 
 
 
